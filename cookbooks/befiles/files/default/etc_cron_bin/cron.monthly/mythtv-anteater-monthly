@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Placed by chef
+
+/usr/local/bin/clonetxt | /usr/bin/mailx -s "DVR Clone-Backup reminder" linuxtrader@gmail.com
+

@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Placed by chef
+
+#Notify everyone of available podcasts
+/usr/local/bin/podcaststxt | /usr/bin/mime-construct --type text/html --subject "My DVR Podcasts" --to drmommarose@yahoo.com --to linuxtrader@gmail.com --file -
+
+
+#Make some backups if /media/PATRIOT is mounted, then unmount it.
+/usr/local/bin/fssnap.boot                > /tmp/log.boot 2>&1
+/usr/local/bin/fssnap.system              > /tmp/log.root 2>&1
+/usr/local/bin/fssnap.system  mythtv      > /tmp/log.myth 2>&1
+/usr/local/bin/fssnap.system  home        > /tmp/log.home 2>&1
+/usr/bin/rsync -a --no-o --no-g --delete /var/lib/mythtv/db_backups/ /media/PATRIOT/db_backups > /tmp/log.mysq 2>&1
+/bin/umount /media/PATRIOT                > /tmp/log.PATR 2>&1
+
