@@ -66,7 +66,7 @@ end
 
 %w{quarterly weekly}.each do |cycle|
  remote_directory "/etc/cron.#{cycle}" do
-    source "cron_bin/cron.#{cycle}"
+    source "etc_cron_bin/cron.#{cycle}"
     files_mode "755"
  end
 end

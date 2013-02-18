@@ -1,4 +1,0 @@
-#!/bin/bash
-
-# Placed by chef
-/bin/rm -rf /home/ant/.mythtv/themecache/* 2>&1 && /usr/bin/pkill mythfrontend > /dev/null 2>&1

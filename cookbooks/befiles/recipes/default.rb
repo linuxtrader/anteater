@@ -50,7 +50,7 @@ remote_directory "/etc" do
 end
 
 
-%w{hourly }.each do |cycle|
+%w{hourly daily weekly monthly}.each do |cycle|
  remote_directory "/etc/cron.#{cycle}" do
     source "etc_cron_bin/cron.#{cycle}"
     files_mode "755"
