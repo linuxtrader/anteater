@@ -1,0 +1,22 @@
+#! /usr/bin/expect --
+
+################################################################################
+# Script Name : userjob.exp
+# Purpose     : timeout wrapper expect script for real userjob
+#
+# Started by Dan Rose 
+# Last changed        on 
+################################################################################
+
+# seconds
+set timeout 18000
+
+# UserJob commcut_ant Called with %DIR% %FILE% %CHANID% %STARTTIME%
+
+set VIDEODIR  [lindex $argv 0]
+set FILENAME  [lindex $argv 1]
+set CHANID    [lindex $argv 2]
+set STARTTIME [lindex $argv 3]
+
+set mypid [spawn -noecho /usr/local/sbin/commcut_ant $VIDEODIR $FILENAME $CHANID $STARTTIME]
+expect timeout {exec kill $mypid;exec kill -9 $mypid;exit 1}

@@ -1,0 +1,102 @@
+#! /usr/bin/perl
+
+# Placed by chef
+print <<'EOT';
+
+Consider making an external full backup soon.
+
+Keep these instructions nearby when making a backup.
+
+Plan for 7+ hours of downtime for 2TB, less for smaller drives.
+
+Steps...
+
+1. Locate the "DVRCLONE" CD that you were given or optionally
+   download the CD image file (dvrclone.iso), and create your own CD.
+
+   The latest image file can be obtained with any secure copy (scp) client tool
+   such as the freely available winscp for Microsoft Windows.
+   http://winscp.net/eng/download.php
+
+   Connect any scp tool to the address of anteater.webhop.net, and login as guest to download the CD image.
+   Login: guest 
+   Password: stadiad2
+
+   Burn your own CD with this image.  (This CD image has been customized for the DVR system)
+
+2. Wait until you have no upcoming DVR activity for 7+ hours.
+
+3. Insert the Backup CD into the cdrom while the DVR is in normal operation.
+
+4. Use the remote to exit the system and select "Shutdown" from the menu.
+
+5. When the machine is completely off, connect the external drive system and power on the external disk drive.
+
+   The external disk is called the backup "target".  Observe the serial number on the drive label.
+
+6. Power on the DVR and the CD should boot-up into the backup system (Click-n-clone).
+
+   * If the CD fails to start, the DVR system will start normally , repeat step-4 to stop the system.
+      (The DVR system MUST not operate while the target drive is attached from step-5.) 
+
+   Proceed when the Click-n-clone menu is on screen.
+
+7. Select A to set the source disk. This is the disk used by the DVR day to day.
+
+   Use the Red-Dot-button (record-button) on the remote to select the primary drive, normally sda.
+      After the selection, observe the serial number of the drive on screen and _be sure_ that it is the serial
+      number shown below as the source. 
+
+8. Select B to set the target disk. 
+
+   Use the Red-Dot-button (record-button) on the remote to select the backup drive, normally sdb.
+      After the selection, observe the serial number of the drive on screen and confirm that it is the serial
+      number of the target disk in step 5 above.
+
+9. Select C "CLick-n-Clone Now" and press <ok> to start the backup process.
+
+   Observe the progress bar after a few seconds.
+
+10. Only When the backup is finished, and the progress bar is not showing...
+    * Be sure the TV screen is active and not in sleep-mode.
+    A. Eject and remove the cdrom
+    B. Press-and-hold the DVR power button until power is completely off.
+    C. Power-off and Disconnect the target drive.
+    D. Press the DVR power button briefly to restart the DVR normally. 
+       Wait for DVR to start normal operation.
+
+    E. If the DVR does not boot fully after 5 minutes, you may need to press the DVR reset button.
+
+11. Test both tuners with Live-TV mode when the DVR resumes normal operation.
+    A. Live-TV mode always begins with the first tuner on screen.
+    B. Use the Start button on the remote to "select another input", to test the other tuner.
+
+12. Store the target drive in a remote location.
+
+Useful Information about your drive(s):
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+EOT
+
+#fsarchiver probe 2>&1 | sed -n '/===DISK===/,/[=*===DEVICE====*]/p' | grep GB | awk '{print $1}' | cut -c2-
+#system ("/sbin/hdparm -I /dev/sda | egrep 'Number:|Firmware|Rotation|device size'");
+#system ("[ -x /sbin/hdparm ] && /sbin/hdparm -I /dev/sda | egrep '/dev|Rotation|device size'");
+
+my @drives=`cat /proc/partitions`;
+
+map {
+# match like hda, sda, sdb, sdc
+ if (m/.d[a-z]$/) {
+  s/^( +\d+)( +\d+)( +\d+) (.d[a-z])$/sprintf ("%s",$4)/e;
+  chomp($_);
+  print "/dev/$_:\n";
+  system ("[ -x /usr/sbin/smartctl ] && /usr/sbin/smartctl -H /dev/$_ |grep result |sed 's/ self-assessment//'");
+  system ("[ -x /usr/sbin/smartctl ] && /usr/sbin/smartctl -i /dev/$_ |egrep 'Mod|Num|Firm|Cap' ");
+  print "\n";
+ }
+} @drives;
+
+#print "/dev/sdb\n";
+#system ("ls /dev/sdb > /dev/null 2>&1 && echo /dev/sdb && /sbin/hdparm -I /dev/sdb | egrep 'Number:|Firmware|Rotation|device size'");
+
+
+

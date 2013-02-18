@@ -1,0 +1,56 @@
+
+# Placed by chef
+
+/home/ant/Dropbox/mythtv/zotac.mythtv.cpio
+/home/ant/Dropbox/mythtv/zotac.root.cpio
+{
+	rotate 2
+	weekly
+	missingok
+	notifempty
+	compress
+	sharedscripts
+	postrotate
+                /usr/local/sbin/antbuilder > /tmp/antbuilder.out 2>&1 || true
+	endscript
+}
+
+/var/log/temps
+{
+	rotate 4
+	weekly
+	missingok
+	notifempty
+	compress
+	delaycompress
+	sharedscripts
+}
+
+/var/log/upcoming
+{
+	rotate 3
+	yearly
+	missingok
+	notifempty
+	compress
+	delaycompress
+	sharedscripts
+}
+
+/mnt/scratch/zotac-boot.fsa
+/mnt/scratch/zotac-root.fsa
+/mnt/scratch/zotac-home.fsa
+/mnt/scratch/zotac-mythtv.fsa
+{
+	rotate 2
+	weekly
+	missingok
+	notifempty
+	sharedscripts
+	postrotate
+  		/usr/local/bin/fssnap.boot          /mnt/scratch > /mnt/scratch/log.boot 2>&1 || true
+		/usr/local/bin/fssnap.system mythtv /mnt/scratch > /mnt/scratch/log.myth 2>&1 || true
+		/usr/local/bin/fssnap.system root   /mnt/scratch > /mnt/scratch/log.root 2>&1 || true
+		/usr/local/bin/fssnap.system home   /mnt/scratch > /mnt/scratch/log.home 2>&1 || true
+	endscript
+}

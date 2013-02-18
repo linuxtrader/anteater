@@ -1,0 +1,65 @@
+#!/bin/bash
+
+# Placed by chef
+HOST=`hostname`
+VOLGROP='system'                     # name of the volume group
+ORIGVOL=${1:-root}                   # name of the logical volume to backup
+SNAPVOL="my${ORIGVOL}snap"           # name of the snapshot to create
+SNAPSIZ='500M'                       # space to allocate for the snapshot in the volume group
+BACKDIR=${2:-/media/PATRIOT}         # where to put the backup,  # ntfslabel --force /dev/sdz1 PATRIOT
+BACKNAM=${HOST}"-"${ORIGVOL}         # name of the archive
+
+FSAOPTS='-o -j2 --exclude=/home/ant/Dropbox'  #Wildcards already protected
+if [ ${ORIGVOL} == "home"   ]; then FSAOPTS="-o -j2 -e /ant/Dropbox/* "; fi
+if [ ${ORIGVOL} == "mythtv" ]
+then
+      FSAOPTS="-o -j2 -e /recordings/* -e /livetv/* -e /videos/* -e /music/* -e /pictures/* "
+fi
+
+# ----------------------------------------------------------------------------------------------
+
+PATH="${PATH}:/usr/sbin:/sbin:/usr/bin:/bin"
+TIMESTAMP="$(date +%Y%m%d-%H%M)"
+
+# only run as root
+if [ "$(id -u)" != '0' ]
+then
+        echo "this script has to be run as root"
+        exit 1
+fi
+
+# check that the snapshot does not already exist
+if [ -e "/dev/${VOLGROP}/${SNAPVOL}" ]
+then
+        echo "the lvm snapshot already exists, trying to remove it first"
+  if ! lvremove -f /dev/${VOLGROP}/${SNAPVOL} >/dev/null 2>&1
+  then
+        exit 1
+  fi
+fi
+
+# create fresh lvm snapshot
+if ! lvcreate -L${SNAPSIZ} -s -n ${SNAPVOL} /dev/${VOLGROP}/${ORIGVOL} >/dev/null 2>&1
+then
+        echo "creation of the lvm snapshot failed"
+        exit 1
+fi
+
+# main command of the script that does the real stuff
+if fsarchiver savefs ${FSAOPTS} ${BACKDIR}/${BACKNAM}.fsa /dev/${VOLGROP}/${SNAPVOL}
+then
+        #md5sum ${BACKDIR}/${BACKNAM}.fsa > ${BACKDIR}/${BACKNAM}.md5
+        RES=0
+else
+        echo "fsarchiver failed"
+        RES=1
+fi
+
+# remove the snapshot
+if ! lvremove -f /dev/${VOLGROP}/${SNAPVOL} >/dev/null 2>&1
+then
+        echo "cannot remove the lvm snapshot"
+        RES=1
+fi
+
+exit ${RES}

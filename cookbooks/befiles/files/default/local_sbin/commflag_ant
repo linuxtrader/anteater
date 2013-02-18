@@ -1,0 +1,16 @@
+#!/bin/sh
+
+#called by default with args %JOBID%  %VERBOSELEVEL% 
+#The original version
+mythcommflag -j $1 -V $2
+EXITCODE=$?
+
+#This is all we were after, but it requires that normal flagging has already occured.
+mythcommflag -j $1 --gencutlist
+
+#This needs to updated every time we have a finished recording file.
+# Finished flagging is a good approximation.
+#/usr/local/sbin/mythlink.pl
+#/usr/local/sbin/serieslink.pl
+#This code is error or number of commercials flagged.
+exit $EXITCODE

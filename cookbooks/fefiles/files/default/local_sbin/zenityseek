@@ -1,0 +1,4 @@
+#!/bin/bash
+
+#Placed by chef
+/usr/bin/mythcommflag --rebuild --video $1 | (for i in $( seq 1 95); do echo $i;sleep 2; done)| /usr/bin/zenity --auto-close --percentage=1 --progress --width=320 --height=180 --title="Video Seek Tables" --text="Rebuilding Seek Table for $1"

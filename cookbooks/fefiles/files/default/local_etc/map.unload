@@ -1,0 +1,47 @@
+! The other file is map.load, to be loaded for mythtv FE.
+! This file is map.unload, unloaded when mythtv FE exits
+! Placed by chef
+! Called by mythtvloop, or equivelent, to unload settings after mythtv frontend exits.
+! see also xinput for possibly better way to do this.
+! Sun Jan 16 19:52:08 CST 2011: Orginal file
+
+!save current to figure it out.
+!xmodmap      -display :0.0  > pre.modmap
+!xmodmap -pke -display :0.0 >> pre.modmap
+
+!load new syntax, and see the difference
+!xmodmap      -display :0.0 map.load
+!xmodmap      -display :0.0  > post.modmap
+!xmodmap -pke -display :0.0 >> post.modmap
+
+!set this now in mythtv key defs only
+!backspace on a remote, howabout left arrow means "go back"
+!was keysym BackSpace = Escape
+!OLD keycode 22 = Escape NoSymbol Escape
+keycode 22 = BackSpace NoSymbol BackSpace
+
+!set this now in mythtv key defs only
+!channel changing
+!was keysym Prior = Up
+!was keysym Next = Down
+!OLD keycode 112 = Up   NoSymbol Up
+!OLD keycode 117 = Down NoSymbol Down
+!keycode 112 = Prior NoSymbol Prior
+!keycode 117 = Next  NoSymbol Next
+
+
+!cant get around this one yet
+! mythtv dont like shift in this case. 
+!DID keycode 50 = Alt_L Meta_L Alt_L Meta_L
+!OLD remove Shift = Shift_L Shift_R
+keycode 50 = Shift_L NoSymbol Shift_L
+!add Shift = Shift_L Shift_R
+
+!Rest of the fixes involve key assignments done inside the FE, settings.
+!As follows
+! top left key is jumpoint to main menu
+! top right key is XF86Sleep, not yet assigned to an action, but needs maybe F4-Alt, or guide data.
+! colored keys are jumppoints to recordings, music, photos, and videos
+! next row is hot during playback(like):  next audio(+), info(global)(i), toggleCC(t), zooms(w)
+! last row * is global for Edit
+! need a way to load these in bulk vs the FE.

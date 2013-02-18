@@ -1,0 +1,21 @@
+
+# Placed by chef
+
+/var/log/mythtv/mythfrontend.log {
+        daily
+	size=10M
+        rotate 3
+        notifempty
+        copytruncate
+	missingok
+}
+
+/var/log/mythtv/mythwelcome.log {
+        daily
+	size=10M
+        rotate 2
+        notifempty
+        copytruncate
+        missingok
+}
+

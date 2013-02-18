@@ -1,0 +1,25 @@
+#!/bin/bash
+
+cd
+
+FILE=$1
+
+# Too slow, and fails to get some audio streams
+#projectx -ini /usr/local/X.ini -demux FRASIER_You_Can_Go_Home_Again.src -name home
+
+# Fast, Fails to get some audio streams
+#tcextract -x ac3 -a 0 -i $FILE > 1.ac3
+#tcextract -x ac3 -a 1 -i $FILE > 2.ac3
+
+
+mencoder -oac copy -aid 128 -ovc frameno -vc null -o 1.ac3 $FILE > /dev/null 2>&1
+mencoder -oac copy -aid 129 -ovc frameno -vc null -o 2.ac3 $FILE > /dev/null 2>&1
+
+pacpl --to wav --overwrite --delete 1.ac3  > /dev/null 2>&1
+pacpl --to wav --overwrite --delete 2.ac3  > /dev/null 2>&1
+
+sox 1.wav -n stat 2>&1 | grep norm | awk '{print $3}' | grep -q 0.000000 || stream=1
+
+sox 2.wav -n stat 2>&1 | grep norm | awk '{print $3}' | grep -q 0.000000 || stream=2
+rm -f 1.wav 2.wav
+echo $stream

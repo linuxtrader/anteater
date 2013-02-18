@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Placed by chef
+# echo a timestamp and the degrees in Celcius of the nvidia graphical processing unit
+
+TIMESTAMP="$(date +%Y%m%d-%H%M)   "
+sudo /usr/bin/nvidia-settings --display :0.0 -q GPUCoreTemp| grep Attribute | awk '{print $4}' | sed 's/\.//' | sed "s/^/$TIMESTAMP/"
+
+#Was used for 950Q tuner that failed to start on reboot
+#grep -q registering /var/log/messages && (grep 'registering adapter 0' /var/log/messages | tail -1 | grep -q Samsung || echo Tuner failed to register | mailx -s Tuner_Failed linuxtrader@gmail.com)
+
+
+#su ant -c "DISPLAY=:0.0 nvidia-settings -q GPUCoreTemp"| grep Attribute
+#su ant -c "DISPLAY=:0.0 nvidia-settings -q gpus" 
+#su ant -c "DISPLAY=:0.0 nvidia-settings -q all" |  egrep 'NvidiaDriver|VideoRam|GPUCoreTemp|Resolution|RefreshRate' | grep Attribute
+

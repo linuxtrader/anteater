@@ -1,0 +1,33 @@
+#!/usr/bin/perl
+
+#Placed by chef
+#Dynamically adjust overscan for frontend and my favorite screensaver: noof
+#/usr/local/sbin/overscan_saver
+#This is called by frontendloop if ~/Desktop/OVERSCAN_ON exists
+
+# query is by..
+#DISPLAY=:0.0 nvidia-settings --query=OverscanCompensation
+# OR
+#DISPLAY=:0.0 nvidia-settings -q '[gpu:0]/GPUPowerMizerMode'
+#DISPLAY=:0.0 nvidia-settings --query=GPUPowerMizerMode
+#DISPLAY=:0.0 nvidia-settings -q all | egrep 'NvidiaDriver|VideoRam|GPUCoreTemp|Resolution|RefreshRate' | grep Attribute
+
+
+#Start off in mythtv mode
+system "DISPLAY=:0.0 /usr/bin/nvidia-settings --assign=OverscanCompensation=90 > /dev/null";
+
+#Must be run by the user of the display: normally ant
+my $adjusted = 0;
+open (IN, "DISPLAY=:0.0 xscreensaver-command -watch |");
+while (<IN>) {
+    if (m/^(BLANK|LOCK)/) {
+        if (!$adjusted) {
+           system "DISPLAY=:0.0 /usr/bin/nvidia-settings --assign=OverscanCompensation=0 > /dev/null";
+           $adjusted = 1;
+        }
+     } elsif (m/^UNBLANK/) {
+        system "DISPLAY=:0.0 /usr/bin/nvidia-settings --assign=OverscanCompensation=90 > /dev/null";
+        $adjusted = 0;
+     }
+}
+

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Anteater Frontend
+Comment=A restarting frontend for all content on a mythtv-backend
+GenericName=MythTV Viewer
+Exec=/usr/local/sbin/frontendloop
+Type=Application
+Encoding=UTF-8
+Icon=/usr/share/mythtv/themes/MythCenter-wide/ui/mythtv_logo.png
+Categories=GNOME;Application;AudioVideo;Audio;Video
+X-AppInstall-Package=mythtv

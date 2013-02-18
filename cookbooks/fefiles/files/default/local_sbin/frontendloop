@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# Placed by chef
+# This is /usr/local/sbin/frontendloop
+# Its Called by /home/ant/.config/autostart/anteater.desktop
+# This runs mythfrontend until you quit it without error. If FE exits with an err, it will auto-restart it.
+
+# Sun Jan 16 19:46:56 CST 2011: xmodmap additions to support CE Compass Remote $14
+
+#idea
+#pidof mythfrontend.real 2>&1 >/dev/null && wmctrl -a "MythTV Frontend" 2>/dev/null && exit 0
+
+# Make sure screensaver is ready before even starting mythtv
+# -x cause it is a script. Use coproc cause I cant end this line with ampersand
+#But only on TVs that need this
+if [ -f ~/Desktop/OVERSCAN_ON ]; then
+  pidof -x /usr/local/sbin/overscan_saver 2>&1 >/dev/null || coproc /usr/local/sbin/overscan_saver 
+fi
+
+# watch for screenshots and move them some place useful.
+pidof dnotify || /usr/bin/dnotify --create /home/ant/.mythtv -s -b -e /usr/local/sbin/mvpng
+
+# Load keymaps for compass remote in mythtv
+xmodmap -display :0.0 /usr/local/etc/map.load
+
+# keep mythtv alive
+# Tried to add options mythfrontend -v playback --loglevel=debug
+# but, actually, must be in /etc/mythtv/session-settings instead
+while ! /usr/bin/mythfrontend --service
+do
+      echo `date` ------------- Mythfrontend exited abruptly
+done | tee -a /tmp/FE_ERRORS
+
+# UnLoad compass remote keymaps, so shift and backspace works again
+xmodmap -display :0.0 /usr/local/etc/map.unload

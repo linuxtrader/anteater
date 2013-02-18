@@ -1,0 +1,6 @@
+maxx = "1024"
+maxy = "1024"
+login = ""
+thumbnails = "1"
+url = "http://anteater.webhop.net/images/soap.php"
+

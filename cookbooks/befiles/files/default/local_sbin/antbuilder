@@ -1,0 +1,75 @@
+#!/bin/csh
+
+# Placed by chef
+################################################################################
+# Script Name : antbuilder
+# Purpose     : create anteater bundles, run as root
+#
+# Started by Dan Rose ON Fri Aug 11 16:50:58 CDT 2000  
+################################################################################
+
+# If the rules file doesnt list the dirs then they will still be 
+# created as needed but may not have the desired owner:group
+# because that info was not found in the cpio archive.
+
+# Sun Jan 16 19:48:02 CST 2011: Backups now go to Dropbox.com, if available
+# Get Dropbox installed and working with defaults, then create /home/ant/Dropbox/mythtv
+# while Dropbox is running.  Then enables the script to detect if dropbox is running or not.
+
+
+if ($LOGNAME != root) then
+ echo Must be root
+ exit 1
+endif
+
+#Might as well
+/usr/local/sbin/checksums
+
+set now = `date '+%Y%m%d'`
+
+if ( -e /media/PATRIOT) then
+   set buildbase = /media/PATRIOT
+else
+   set buildbase = /var/tmp
+endif
+mkdir -p $buildbase/mythtv >& /dev/null
+
+# see dropbox.com to enable this
+# This is the one we want for OFFSITE backups.
+if ( -e /home/ant/Dropbox/mythtv) then
+   set buildbase = /home/ant/Dropbox
+endif
+
+set mrules = /usr/local/sbin/myth.bld
+set rrules = /usr/local/sbin/root.bld
+
+set mtobuild = $buildbase/mythtv/`hostname`.mythtv.cpio
+set rtobuild = $buildbase/mythtv/`hostname`.root.cpio
+set dbtbuild = $buildbase/mythtv/db_backups
+
+/bin/rm -f $mtobuild
+/bin/rm -f $rtobuild
+
+#Just have an empty archive
+/usr/bin/touch /tmp/$$.deleteme
+/bin/ls /tmp/$$.deleteme | /bin/cpio -o -O $mtobuild
+/bin/ls /tmp/$$.deleteme | /bin/cpio -o -O $rtobuild
+/bin/rm /tmp/$$.deleteme
+
+#so find can have -name 'wildcards' even with eval
+set noglob
+
+foreach i ("`cat $mrules`")
+   eval /usr/bin/find "$i" -print | /bin/cpio -oAv -O $mtobuild
+end
+foreach i ("`cat $rrules`")
+   eval /usr/bin/find "$i" -print | /bin/cpio -oAv -O $rtobuild
+end
+
+unset noglob
+/usr/bin/rsync -a --delete /var/lib/mythtv/db_backups/ $dbtbuild
+
+echo "extract% cat $mtobuild | cpio -imdv"
+echo "extract% cat $rtobuild | cpio -imdv"
+echo "add u flag to cause overwrwite"
+

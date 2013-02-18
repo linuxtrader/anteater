@@ -1,0 +1,88 @@
+#!/bin/sh
+
+# Placed by chef
+# Called with %DIR% %FILE% %CHANID% %STARTTIME%
+
+VIDEODIR=$1
+FILENAME=$2
+CHANID=$3
+STARTTIME=$4
+
+# Sanity checking, to make sure everything is in order.
+if [ -z "$VIDEODIR" -o -z "$FILENAME" -o -z "$CHANID" -o -z "$STARTTIME" ]; then
+      echo "Usage: $0 <VideoDirectory> <FileName> <CHANID> <STARTTIME>"
+      exit 5
+fi
+if [ ! -f "$VIDEODIR/$FILENAME" ]; then
+        echo "File does not exist: $VIDEODIR/$FILENAME"
+        exit 6
+fi
+
+# transcode the video to remove the commercials from the file.
+#mythtranscode --mpeg2      --honorcutlist --showprogress -c $CHANID -s $STARTTIME -o $VIDEODIR/$FILENAME.tmp
+# 2 changes considered during failing disk
+# Now apparently, see videoexport.pl, this transcode alters the audio order if marked internally as 34,35
+# which is common for older shows.  Should be x80,x81, but these become x81,x80.
+mythtranscode -c $CHANID -s $STARTTIME -p autodetect -l -o $VIDEODIR/$FILENAME.tmp
+ERROR=$?
+if [ $ERROR -ne 0 ]; then
+        echo "Transcoding failed for ${FILENAME} with error $ERROR"
+        exit $ERROR
+fi
+# rm to save space else mv and use cron job to periodically clear these out.
+#mv $VIDEODIR/$FILENAME $VIDEODIR/$FILENAME.old
+rm $VIDEODIR/$FILENAME 
+mv $VIDEODIR/$FILENAME.tmp $VIDEODIR/$FILENAME
+mythcommflag --clearcutlist  -f $VIDEODIR/$FILENAME
+mythcommflag --clearskiplist -f $VIDEODIR/$FILENAME
+ERROR=$?
+if [ $ERROR -eq 0 ]; then
+        # Fix the database entry for the file, should not require password, but confirm.
+        # http://www.mythtv.org/wiki/Recorded_table
+        # cat << EOF | mysql mythconverg --user=mythtv --password=anteater
+        cat << EOF | mysql mythconverg
+UPDATE 
+        recorded
+SET
+        cutlist = 0,
+        transcoded = 1,
+        filesize = $(ls -l $VIDEODIR/$FILENAME | awk '{print $5}') 
+WHERE
+        basename = '$FILENAME';
+
+DELETE FROM 
+       recordedseek
+WHERE 
+       chanid=$CHANID AND starttime=$STARTTIME;
+
+DELETE FROM 
+       recordedmarkup
+WHERE 
+       chanid=$CHANID AND starttime=$STARTTIME;
+EOF
+
+else
+        echo "Clearing skiplist failed for ${FILENAME} with error $ERROR"
+        exit $ERROR
+fi
+
+#mythcommflag Works best for NUV, and mythtranscode may work best for mpeg2
+#mythcommflag -f $VIDEODIR/${FILENAME} --rebuild
+#mythtranscode --mpeg2 --buildindex --allkeys --showprogress -c $CHANID -s $STARTTIME 
+ mythtranscode         --buildindex --allkeys                -c $CHANID -s $STARTTIME 
+ERROR=$?
+
+#Not positive who is leaving this behind, probably the first transcode.
+rm $VIDEODIR/$FILENAME.tmp.map 
+
+#Make links for samba clients to see, and rsyncs to external storage.
+#Remove spaces to accomodate various storage media.
+#/usr/local/sbin/mythlink.pl
+#/usr/local/sbin/serieslink.pl
+
+#We could transfer/rsync a copy now to remote/external storage
+
+if [ $ERROR -ne 0 ]; then
+      echo "Rebuilding seek list failed for ${FILENAME} with error $ERROR"
+fi
+exit $ERROR

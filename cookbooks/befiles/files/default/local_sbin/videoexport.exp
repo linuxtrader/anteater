@@ -1,0 +1,27 @@
+#! /usr/bin/expect --
+
+################################################################################
+# Script Name : userjob.exp
+# Purpose     : timeout wrapper expect script for real userjob
+#
+# Started by Dan Rose 
+# Last changed        on 
+################################################################################
+
+# seconds
+#   Ideally the timeout should be a factor of how large the source file is.
+#   Job could be called with one additional parm at the end:  %FILE%
+# 5, 7, 10hrs
+set timeout 18000
+set timeout 25200
+set timeout 36000
+
+# UserJob videoexport.pl Called with 4 args, starttime=%STARTTIME% chanid=%CHANID% dir=%DIR% devices=%PLAYGROUP%
+
+set START   [lindex $argv 0]
+set CHANID  [lindex $argv 1]
+set DIR     [lindex $argv 2]
+set DEVICES [lindex $argv 3]
+
+set mypid [spawn -noecho /usr/local/sbin/videoexport.pl $START $CHANID $DIR $DEVICES]
+expect timeout {exec kill $mypid;exec kill -9 $mypid;exec ls -l | mail -s video_export_timeout linuxtrader@gmail.com; exit 1}

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+/usr/local/sbin/mythlink.pl
+/usr/local/sbin/serieslink.pl

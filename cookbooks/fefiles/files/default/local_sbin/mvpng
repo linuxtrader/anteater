@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Placed by chef
+cd ~ant/.mythtv
+sleep 10
+mv *.png /var/lib/mythtv/screenshots

@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Placed by chef
+#This is /usr/local/sbin/FErestart, called by window manager when power button pressed on remote
+
+#Let the user know we got it, but keep moving forward
+(for i in $( seq 40 100 )
+ do
+   echo $i
+   sleep 0.1
+ done)|zenity --auto-close --progress --width=320 --height=180 --text="Re-Starting MythTV FrontEnd" --title="Starting MythTV"  &
+
+
+#Stop the actual frontend if it is hung or not, running or not.
+pkill -9 -f mythfrontend.real 
+
+echo `date` ------------- Mythfrontend restarted manually >> /tmp/FErestarts
+
+# Be sure that frontendloop is running, since it actually starts and watches the frontend.
+pidof -x /usr/local/sbin/frontendloop 2>&1 >/dev/null || exec /usr/local/sbin/frontendloop

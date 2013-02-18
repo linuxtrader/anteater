@@ -1,0 +1,71 @@
+#! /bin/csh
+
+# Placed by chef
+################################################################################
+# Script Name : cpiobuilder
+# Purpose     : create and extract bundles, run as root
+#
+# Started by Dan Rose ON Fri Aug 11 16:50:58 CDT 2000  From dwadmin5
+# Last changed        on Fri Aug 11 16:55:14 CDT 2000  From dwadmin5
+################################################################################
+
+
+#
+# If the rules file doesnt list the dirs then they will still be 
+# created as needed but may not have the desired owner:group
+# because that info was not found in the cpio archive.
+
+
+
+
+#The L option below follows links to get the data
+#so on destination the file will be made and not a link
+#If you remove the L for cpio you must remove the -follow
+#for find, that is if find uses -ls, if it uses -print
+#then the -follow has no effect.
+
+printf "Specify file that lists contents to build: "
+set rules = $<
+printf "\n\n"
+
+printf "Specify name and place of archive to create: "
+set tobuild = $<
+printf "\n\n"
+
+if (-e $tobuild) then
+  /bin/rm -i $tobuild
+endif
+
+#Just have an empty archive
+touch /tmp/$$.deleteme
+ls /tmp/$$.deleteme | cpio -o -O $tobuild
+/bin/rm /tmp/$$.deleteme
+
+#so find can have -name 'wildcards' even with eval
+set noglob
+
+foreach i ("`cat $rules`")
+
+   #This one dereferences links
+   #eval find "$i" -follow -print | cpio -oAL -O $tobuild
+   #
+   #Note that the -follow flag could be placed in the rules file
+   #Then maybe use conditional on existence of -follow to add L flag.
+   #-follow really has no effect if -print is used, -ls makes diff.
+   #The -L option to cpio is what really makes the difference.
+
+   #This one makes the link, as normally desired.
+   #Linux makes relative by default
+   eval find "$i" -print | cpio -oAv -O $tobuild
+
+
+end
+
+echo "extract% cat $tobuild | cpio -imdv"
+echo "add u flag to cause overwrwite"
+
+#
+#Add the u flag during extract to overwrite files of the same name 
+#unconditionally, default is to warn/skip if existing file is newer.
+#Extract from anywhere, cpio knows where to put things IF they were built
+#using this script.

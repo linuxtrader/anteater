@@ -1,0 +1,9 @@
+
+
+# restart frontend only
+pkill -f /usr/bin/mythfrontend.real
+
+# restart entire ant session
+pkill -u ant
+sleep 3
+service gdm --full-restart

@@ -1,0 +1,5 @@
+
+
+# Placed by chef
+su ant -c "DISPLAY=:0.0 nvidia-settings -q all" |  egrep 'NvidiaDriver|VideoRam|GPUCoreTemp|Resolution|RefreshRate' | grep Attribute
+

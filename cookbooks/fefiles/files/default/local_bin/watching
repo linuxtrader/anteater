@@ -1,0 +1,78 @@
+#! /bin/bash 
+
+# Placed by chef
+egrep 'frontend version|None' /var/log/mythtv/mythfrontend.log | egrep -v 'VDPAU|Attempting' | sed 's/None$/None\n/' | tail -9
+
+#[ -e /sys/block/dm-1 ] && iostat -dkx dm-1 1 2 | tail -3 | sed 's/dm-1/myth/'
+ iostat -dkx sda 1 2 | tail -3
+
+pidof mythbackend > /dev/null       && (for thispid in `pidof mythbackend`;do echo -en 'BE\t';cat /proc/$thispid/status  |grep VmRSS;done)
+pidof mythfrontend.real > /dev/null && (echo -en 'FE\t';cat /proc/`pidof mythfrontend.real`/status|grep VmRSS)
+pidof mythcommflag > /dev/null      && (echo -en 'CF\t';cat /proc/`pidof mythcommflag`/status     |grep VmRSS)
+
+
+#pmap needs suid root if everyone can run it.
+#(pmap `pidof mythbackend` 2>/dev/null;pmap `pidof mythfrontend.real` 2>/dev/null;pmap `pidof mythcommflag` 2>/dev/null)| grep '^ total'
+echo
+#free | egrep 'total|^-'
+free
+echo 
+swapon -s
+echo
+if  [[ -e /var/log/temps ]] ; then echo -en "\tlatest temperature was: " ;tail -1 /var/log/temps; fi
+
+/usr/bin/mythshutdown -s 
+flag=$?
+echo
+
+if (($flag == 0)); then
+       echo -e "\tBE is Idle" 
+       exit 0
+fi
+if (($flag == 255)); then
+       echo -e "\tSetup is running" 
+       exit 0
+fi
+if (($flag == 32)); then
+       echo -e "\tBE Jobs are queued and WAITING ..." 
+       flag=$((flag - 32)) 
+fi
+if (($flag >= 32)); then
+       echo -e "\tBE Jobs are running..." 
+       flag=$((flag - 32)) 
+fi
+if (($flag >= 16)); then
+       echo -e "\tBE is locked"
+       flag=$((flag - 16)) 
+fi
+if (($flag >= 8)); then
+       echo -e "\tBE is recording"
+       flag=$((flag - 8)) 
+fi
+if (($flag >= 4)); then
+       echo -e "\tGrabbing EPG data"
+       flag=$((flag - 4)) 
+fi
+
+#Remainders
+case "$flag" in
+       1)echo -e "\t\tJob: Transcoding" ;;
+       2)echo -e "\t\tJob: Commercial Flagging" ;;
+esac
+
+
+
+exit 0
+# old
+case "$flag" in
+       0)echo "Backend is Idle" ;;
+       1)echo "Transcoding Job" ;;
+       2)echo "Commercial Flagging" ;;
+       4)echo "Grabbing EPG data" ;;
+       8)echo "Backend is Recording" ;;
+       16)echo "Backend is Locked" ;;
+       32)echo "Jobs are running or pending" ;;
+       64)echo "In a daily wakeup/shutdown period" ;;
+       128)echo "Less than 15 minutes to next wakeup period" ;;
+       255)echo "Setup is running" ;;
+esac

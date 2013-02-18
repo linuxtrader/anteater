@@ -1,0 +1,69 @@
+Push out changes
+
+knife cookbook upload fefiles
+knife cookbook show fefiles
+
+
+rake install    # rake -T to see all avail tasks
+
+client% sudo chef-client
+Many% knife ssh name:fe* -x mythtv "sudo chef-client"
+Many% knife ssh name:fe* -x mythtv -i ~/.ssh/id_dsa "sudo chef-client"
+Many% knife ssh name:fe* -x mythtv "uname -a" 
+  OR% ansible     fe --user mythtv -a 'uname -a'
+
+
+#Bootstrap a new client machine
+knife bootstrap -x mythtv --sudo 192.168.1.94 -r 'role[fe]'
+knife bootstrap -x mythtv --sudo 192.168.1.96 -r 'role[be],recipe[chef-client]' 
+
+
+# Add then remove recipe
+knife node run_list add    fe1.home fe
+knife node run_list remove fe1.home recipe[fe]
+
+# Then add to role and confirm it.
+knife node run_list add fe1.home 'role[fe]'
+knife node show fe1.home
+
+
+#List hosts with matching packages
+knife search node *:* -a packages.
+knife search node *:* -a packages.xterm
+
+# Show absolutely everything
+knife node show fe2.home -l
+
+
+#Get other answers for all nodes
+knife search node *:* -a dmi.system.product_name
+knife search node *:* -a dmi.system.manufacturer
+knife search node *:* -a dmi.system.serial_number
+
+
+#List packages per specific hosts
+knife search node name:fe3.home -a packages.xterm
+knife search node name:fe2.home -a packages.
+
+#List sda drive for relevant hosts
+knife search node name:fe* -a block_device.sda.model.
+knife search node (NOT name:server*) -a dmi.system.product_name
+
+
+egrep 'backed up|purged|installed|changed' /var/log/chef/client.log
+tail -f /var/log/chef/client.log | egrep 'created|backed up|purged|installed|changed|Run complete'
+
+knife bootstrap -x mythtv --sudo 192.168.1.96                             -r 'role[be],recipe[chef-client]' 
+# Pre-bootstrap: remote node add server1.home to /etc/hosts with current IP
+knife bootstrap -x mythtv --sudo anteater.dyndns.tv -N anteater.dyndns.tv -r 'role[be],recipe[chef-client]' 
+# Post-bootstrap: edit /etc/client.rb and convert server1.home to anteater.webhop.net
+
+Add and rm constraints per node
+knife node run_list add    smithsbe "recipe[befiles@0.1.2]"
+knife node run_list remove smithsbe "recipe[befiles@0.1.2]" 
+
+
+knife search node 'fqdn:zotac.*' 
+knife search node 'fqdn:zotac.*' 
+knife status
+knife ssh -x mythtv 'role:be' -i ~/.ssh/id_dsa  "ifconfig -a" -a name 

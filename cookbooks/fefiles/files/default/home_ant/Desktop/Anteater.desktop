@@ -1,0 +1,12 @@
+
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Type=Application
+Name=Anteater
+Comment=Start mythtv frontend with anteater configs
+Categories=Application;
+Exec=/usr/local/sbin/frontendloop
+Icon=gtk-media-play-ltr
+Terminal=false
+StartupNotify=true

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Placed by chef
+now=`date '+%Y%m%d%H%M'`
+cd /usr/local/sbin
+sudo cat root.bld myth.bld | xargs -l cksum 1>/var/lib/mythtv/db_backups/checksums.$now 2>/dev/null
+
+/usr/bin/mythbackend --version >> /var/lib/mythtv/db_backups/checksums.$now

@@ -1,0 +1,7 @@
+
+
+# Placed by chef
+comm=`history|tail -1|sed 's/  */ /g'|cut -d ' ' -f 4-`
+
+echo "scale=4; $comm ;" | bc
+

@@ -1,0 +1,87 @@
+! This file is map.load, to be loaded for mythtv FE.
+! The other file is map.unload, unloaded when mythtv FE exits
+! Placed by chef
+! Called by mythtvloop, or equivelent, to load it before/during mythtv frontend.
+! see xev and xkeycaps for keymapping tools
+
+! see xautomation: % xte "key m" "key m" "key m" "key BackSpace" "key BackSpace"
+! for keycodes over 255 see evtest and the xf86-input-evdev driver
+! ls -l /dev/input/by-id/; sudo evtest /dev/input/input5
+
+!save current to figure it out.
+!xmodmap      -display :0.0  > pre.modmap
+!xmodmap -pke -display :0.0 >> pre.modmap
+
+!load new syntax, and see the difference
+!xmodmap      -display :0.0 map.load
+!xmodmap      -display :0.0  > post.modmap
+!xmodmap -pke -display :0.0 >> post.modmap
+
+!decided to correct this in myth key defs
+!backspace on a remote?, howabout left arrow means "go back"
+!was keysym BackSpace = Escape
+keycode 22 = Escape NoSymbol Escape
+!UN keycode 22 = BackSpace NoSymbol BackSpace
+
+!channel changing
+!was keysym Prior = Up
+!was keysym Next = Down
+!keycode 112 = Up   NoSymbol Up
+!keycode 117 = Down NoSymbol Down
+!UN keycode 112 = Prior NoSymbol Prior
+!UN keycode 117 = Next  NoSymbol Next
+
+
+! mythtv ignores shift in some cases, causes duplicates. 
+! maybe set these to Alt_R instead, and free up Alt_L for other temp use.
+! Such as Alt_L can be Num_Lock instead which invokes 2nd Numeric field instead
+keycode 50 = Alt_L Meta_L Alt_L Meta_L
+!actually keep Shift_R available, for keyboards, and generate a meta for the # key 
+!remove Shift = Shift_L Shift_R
+
+!UN keycode 50 = Shift_L NoSymbol Shift_L
+!UN add Shift = Shift_L Shift_R
+
+!Num_Lock gets in the way...
+!Num_Lock key is always sent or never sent, number keys and # key
+!# key on remote also sends Alt_L, with KP_3,5 possibly as seperate key stroke, not a modifier
+!  but when Alt_L is sent as Num_Lock (breaks close key),it IS a modifier.
+!  Alt+PgDown was real, yet Alt+3 yields 3
+!  So make a ALt+XF86yada, (actually Meta+XF86yada), where XF86yada is also a 3
+! Evaporate the Num_Lock
+keycode 77 = Shift_L
+
+! Fix numbers and # keys, Num_Lock is disabled
+keycode  79 = 7
+keycode  80 = 8
+keycode  81 = 9
+keycode  83 = 4
+
+!Disable keypad 5 so it stays out of the way of # key
+!Works in-flight as a 5,but not in cli text boxes, cause myth maps it that way
+!Launch number counts skewed by plus 2 in mythtv
+!myth set Launch(5) to send a 5
+keycode  84 = XF86Launch3
+
+keycode  85 = 6
+keycode  87 = 1
+keycode  88 = 2
+
+!Set Keypad 3 to something usable with the # key
+!Works in-flight as a 3,but not in cli text boxes, cause myth maps it that way
+!Launch number counts skewed by plus 2 in mythtv
+!myth set Launch(3) to send a 3
+!myth set Meta+Launch(3) to send a backspace, or jump pt, whatever
+keycode  89 = XF86Launch1
+
+keycode  90 = 0
+
+
+!Rest of the fixes involve key assignments done inside the FE, settings.
+!As follows
+! top left key is jumpoint to main menu
+! top right key is XF86Sleep, not yet assigned to an action
+! colored keys are jumppoints to recordings, music, photos, and videos
+! next row is hot during playback:  next audio, info(global), toggleCC, zooms
+
+! last row * is global for Edit

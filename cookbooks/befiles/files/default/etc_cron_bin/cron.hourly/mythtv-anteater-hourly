@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Placed by chef
+#egrep 'error|No free sequences' /tmp/kern.log.4 | egrep -q 'saa7164|s5h1411' && echo "critical tuner errors on `hostname`" | mail -s "urgent tuner errors " linuxtrader@gmail.com 9723425208@txt.att.net
+
+kernlog="/var/log/kern.log"
+myip=$(ifconfig -a | grep Bcast | awk '{print $2}' 2> /dev/null)
+hostname=$(hostname)
+to=$(cat /usr/local/etc/critical_mail)
+
+egrep 'error|No free sequences' $kernlog | egrep -q 'saa7164|s5h1411' && (mail -s "Critical from $hostname" $to <<EOB
+There are hung tuners on $myip
+
+Found in $kernlog
+
+df -h /var
+--------------------------
+This email is from /etc/cron.hourly/mythtv-anteater-hourly
+
+EOB
+)
