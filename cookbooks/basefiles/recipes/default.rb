@@ -24,3 +24,16 @@ remote_directory "/usr/local/bin" do
     mode  "755"
     files_mode "755"
 end
+
+remote_directory "/usr/local/etc" do
+    source "local_etc"
+    owner "root"
+    group "root"
+end
+
+%w{weekly}.each do |cycle|
+ remote_directory "/etc/cron.#{cycle}" do
+    source "etc_cron_bin/cron.#{cycle}"
+    files_mode "755"
+ end
+end
