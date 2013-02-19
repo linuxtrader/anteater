@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Placed by chef
+
+#Make local backups if this machine has a scratch dir.
+test -d /mnt/scratch   && /usr/local/bin/fssnap.boot           /mnt/scratch  > /tmp/logs.boot 2>&1
+test -d /mnt/scratch   && /usr/local/bin/fssnap.system  root   /mnt/scratch  > /tmp/logs.root 2>&1
+test -d /mnt/scratch   && /usr/local/bin/fssnap.system  mythtv /mnt/scratch  > /tmp/logs.myth 2>&1
+test -d /mnt/scratch   && /usr/local/bin/fssnap.system  home   /mnt/scratch  > /tmp/logs.home 2>&1
+
+#Copy backups if /media/PATRIOT is mounted, then unmount it.
+test -d /media/PATRIOT && cp /mnt/scratch/*.fsa /media/PATRIOT               > /tmp/patriot.log 2>&1
+ umount /media/PATRIOT                                                       > /dev/null 2>&1
+#test -d /media/PATRIOT && /usr/local/bin/fssnap.system  root                 > /tmp/logp.root 2>&1
+#test -d /media/PATRIOT && /usr/local/bin/fssnap.system  mythtv               > /tmp/logp.myth 2>&1
+#test -d /media/PATRIOT && /usr/local/bin/fssnap.system  home                 > /tmp/logp.home 2>&1
