@@ -17,17 +17,17 @@
 # limitations under the License.
 #
 
-####remote_directory "/usr/local/bin" do
-####    source "local_bin"
-####    owner "root"
-####    group "root"
-####    mode  "755"
-####    files_mode "755"
+remote_directory "/usr/local/bin" do
+    source "local_bin"
+    owner "root"
+    group "root"
+    mode  "755"
+    files_mode "755"
 # No purge because a package could place things here, plus basefiles does
 #    if node[:hostname] =~ /^fe/
 #      purge true
 #    end
-####end
+end
 
 remote_directory "/usr/local/etc" do
     source "local_etc"

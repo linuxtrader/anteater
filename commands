@@ -69,3 +69,11 @@ knife status
 knife ssh -x mythtv 'role:be' -i ~/.ssh/id_dsa  "ifconfig -a" -a name 
 
 knife ssh -x mythtv 'role:be' -i ~/.ssh/id_dsa "tail -200 /var/log/chef/client.log | egrep 'created|backed up|purged|installed|changed'" -a name
+
+
+# Install an exact version of a gem not the latest
+# -V see where it puts everyfile
+# normally in /var/lib/gems, but can put a few executables in the OS.
+gem install chef  -v 10.24.0 -V
+
+gem contents chef  # Shows the /var/lib/gems but not the executables

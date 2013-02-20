@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Placed by chef
+
+cd /var/lib/mythtv/videos/apple
+
+hostname=`/bin/hostname`
+ip=`/usr/bin/resolveip -s $hostname.local`
+
+echo "<h3>Please read this message on a portable device, while connected to your home's WiFi.</h3>"
+echo "<p>The links below will enable you to save your DVR recordings to your portable device.</p>"
+echo "<p>Step-1: Be sure the Podcasts application (purple icon) is installed.</p>"
+echo "<p>Step-2: Click any of the links below to subscribe your mobile device to these TV series on your DVR.</p>"
+echo "<p>The number at left shows how many episodes were available when this report was created. </p>"
+
+ct=0
+for i in `find . -type d | egrep -v 'icons|family$|teen$|empty$' | sed 's/\.//'`;do 
+  ct=`ls \.$i/*.mp4 2>/dev/null | wc -l` 
+  name=`grep '^$ShowName' \.$i/index.php | cut -d '"' -f 2 |sed 's/[[:punct:]]//g'`
+  /bin/echo "$ct <a href=http://$ip/apple$i> $name </a> <br />"
+done
+
+echo "<p>To add more TV series links to this list, just"
+/bin/echo "<a href=http://$ip/mythweb/tv/upcoming> click here </a>"
+echo "while on a computer,"
+echo "then click the title of any episode, and when the options page appears, check the box: Make Portable and press Update Recording Settings</p>"
