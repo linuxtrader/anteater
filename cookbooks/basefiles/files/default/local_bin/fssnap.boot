@@ -6,6 +6,7 @@ ORIGVOL='/dev/sda1'             # name of the logical volume to backup
 SNAPVOL='boot'                  # name of the snapshot to create
 FSAOPTS='-o -j2 -e *.iso'       # Wildcards already protected
 BACKDIR=${1:-/media/PATRIOT}	# where to put the archive
+BACKDIR=${1:-/mnt/scratch}	# default location
 BACKNAM=${HOST}"-boot"          # name of the archive
 
 # ----------------------------------------------------------------------------------------------

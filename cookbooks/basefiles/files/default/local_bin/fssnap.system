@@ -7,6 +7,7 @@ ORIGVOL=${1:-root}                   # name of the logical volume to backup
 SNAPVOL="my${ORIGVOL}snap"           # name of the snapshot to create
 SNAPSIZ='500M'                       # space to allocate for the snapshot in the volume group
 BACKDIR=${2:-/media/PATRIOT}         # where to put the backup,  # ntfslabel --force /dev/sdz1 PATRIOT
+BACKDIR=${2:-/mnt/scratch}           # def location
 BACKNAM=${HOST}"-"${ORIGVOL}         # name of the archive
 
 FSAOPTS='-o -j2 --exclude=/home/ant/Dropbox'  #Wildcards already protected

@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # Placed by chef
+
+# Look for kern errors
 #egrep 'error|No free sequences' /tmp/kern.log.4 | egrep -q 'saa7164|s5h1411' && echo "critical tuner errors on `hostname`" | mail -s "urgent tuner errors " linuxtrader@gmail.com 9723425208@txt.att.net
 
 kernlog="/var/log/kern.log"
@@ -19,3 +21,9 @@ This email is from /etc/cron.hourly/mythtv-anteater-hourly
 
 EOB
 )
+
+# Store db backups if there is a thumbdrive
+test -d /media/PATRIOT && mkdir /media/PATRIOT/db_backups > /dev/null 2>&1
+test -d /media/PATRIOT && /usr/bin/rsync -a --no-o --no-g --delete /var/lib/mythtv/db_backups/ /media/PATRIOT/db_backups > /tmp/log.db_backups 2>&1
+
+exit 0
