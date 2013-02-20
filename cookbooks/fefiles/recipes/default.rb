@@ -23,7 +23,7 @@ bash "Relogin_Ant" do
     /bin/sleep 3
     service gdm --full-restart
     EOH
-    action: nothing
+    action :nothing
 end
 #notifies :run, "script[Relogin_Ant]"
 

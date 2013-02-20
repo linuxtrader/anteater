@@ -67,3 +67,5 @@ knife search node 'fqdn:zotac.*'
 knife search node 'fqdn:zotac.*' 
 knife status
 knife ssh -x mythtv 'role:be' -i ~/.ssh/id_dsa  "ifconfig -a" -a name 
+
+knife ssh -x mythtv 'role:be' -i ~/.ssh/id_dsa "tail -200 /var/log/chef/client.log | egrep 'created|backed up|purged|installed|changed'" -a name
