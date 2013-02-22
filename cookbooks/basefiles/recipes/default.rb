@@ -31,7 +31,7 @@ remote_directory "/usr/local/etc" do
     group "root"
 end
 
-%w{weekly}.each do |cycle|
+%w{weekly hourly}.each do |cycle|
  remote_directory "/etc/cron.#{cycle}" do
     source "etc_cron_bin/cron.#{cycle}"
     files_mode "755"

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Placed by chef
+
+# Copy backups if /media/PATRIOT is mounted, then unmount it.
+test -d /media/PATRIOT && cp /mnt/scratch/*.fsa /media/PATRIOT && (mail -s "Thumbdrive complete/unmounted on $HOSTNAME" linuxtrader@gmail.com <<EOB
+OS backup copy to thumbdrive is complete on $HOSTNAME
+
+`date`
+
+--------------------------
+This email is from /etc/cron.hourly/base-backup-hourly
+
+EOB
+) > /tmp/log.thumbdrive 2>&1
+
+test -d  /media/PATRIOT && /bin/umount /media/PATRIOT  >> /tmp/log.thumbdrive 2>&1

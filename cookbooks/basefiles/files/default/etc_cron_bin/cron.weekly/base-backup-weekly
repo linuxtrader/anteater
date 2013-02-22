@@ -4,14 +4,8 @@
 
 #Make local backups if this machine has a scratch dir.
 #test -d /mnt/scratch   && /usr/local/bin/fssnap.boot           /mnt/scratch  > /tmp/logs.boot 2>&1
-/usr/local/bin/fssnap.boot           >  /tmp/logs.fssnap 2>&1
-/usr/local/bin/fssnap.system  root   >> /tmp/logs.fssnap 2>&1
-/usr/local/bin/fssnap.system  mythtv >> /tmp/logs.fssnap 2>&1
-/usr/local/bin/fssnap.system  home   >> /tmp/logs.fssnap 2>&1
+/usr/local/bin/fssnap.boot           >  /tmp/log.fssnapS 2>&1
+/usr/local/bin/fssnap.system  root   >> /tmp/log.fssnapS 2>&1
+/usr/local/bin/fssnap.system  mythtv >> /tmp/log.fssnapS 2>&1
+/usr/local/bin/fssnap.system  home   >> /tmp/log.fssnapS 2>&1
 
-#Copy backups if /media/PATRIOT is mounted, then unmount it.
-# This should move to hourly check an umount on sucessfull rsync
-test -d  /media/PATRIOT && (cp /mnt/scratch/*.fsa /media/PATRIOT && /bin/umount /media/PATRIOT)  > /tmp/logs.patriot 2>&1
-#test -d /media/PATRIOT && /usr/local/bin/fssnap.system  root                 > /tmp/logp.root 2>&1
-#test -d /media/PATRIOT && /usr/local/bin/fssnap.system  mythtv               > /tmp/logp.myth 2>&1
-#test -d /media/PATRIOT && /usr/local/bin/fssnap.system  home                 > /tmp/logp.home 2>&1

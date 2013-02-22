@@ -25,6 +25,7 @@ EOB
 # Store db backups if there is a thumbdrive
 # technically not needed as these are in the mythtv lvm snap
 test -d /media/PATRIOT && mkdir /media/PATRIOT/db_backups > /dev/null 2>&1
+test -d /media/PATRIOT && mkdir /media/PATRIOT/geometry   > /dev/null 2>&1
 test -d /media/PATRIOT && /usr/bin/rsync -a --no-o --no-g --delete /var/lib/mythtv/db_backups/ /media/PATRIOT/db_backups > /tmp/log.db_backups 2>&1
 
 exit 0
