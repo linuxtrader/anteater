@@ -77,3 +77,6 @@ knife ssh -x mythtv 'role:be' -i ~/.ssh/id_dsa "tail -200 /var/log/chef/client.l
 gem install chef  -v 10.24.0 -V
 
 gem contents chef  # Shows the /var/lib/gems but not the executables
+
+xlpted05 ~>export http_proxy=http://proxy.swacorp.com:8080
+xlpted05 ~>sudo /opt/chef/embedded/bin/gem install health_inspector

@@ -37,6 +37,8 @@
 	sharedscripts
 }
 
+# Broken since hostnames can change
+# and might belong in base files
 /mnt/scratch/zotac-boot.fsa
 /mnt/scratch/zotac-root.fsa
 /mnt/scratch/zotac-home.fsa
@@ -47,10 +49,4 @@
 	missingok
 	notifempty
 	sharedscripts
-	postrotate
-  		/usr/local/bin/fssnap.boot          /mnt/scratch > /mnt/scratch/log.boot 2>&1 || true
-		/usr/local/bin/fssnap.system mythtv /mnt/scratch > /mnt/scratch/log.myth 2>&1 || true
-		/usr/local/bin/fssnap.system root   /mnt/scratch > /mnt/scratch/log.root 2>&1 || true
-		/usr/local/bin/fssnap.system home   /mnt/scratch > /mnt/scratch/log.home 2>&1 || true
-	endscript
 }
