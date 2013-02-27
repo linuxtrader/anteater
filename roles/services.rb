@@ -1,5 +1,6 @@
 name "services"
-description "daemons for every machine"
+description "core services for every machine"
 run_list [
-    "recipe[ntp]"
+    "recipe[ntp]",
+    "recipe[postfix::sasl_auth]",
     ]
