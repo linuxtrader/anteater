@@ -9,3 +9,4 @@
 /usr/local/bin/fssnap.system  mythtv >> /tmp/log.fssnapS 2>&1
 /usr/local/bin/fssnap.system  home   >> /tmp/log.fssnapS 2>&1
 
+exit 0

@@ -15,3 +15,5 @@ EOB
 ) > /tmp/log.thumbdrive 2>&1
 
 test -d  /media/PATRIOT && /bin/umount /media/PATRIOT  >> /tmp/log.thumbdrive 2>&1
+
+exit 0
