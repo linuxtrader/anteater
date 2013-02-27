@@ -19,20 +19,20 @@ default['postfix']['mail_type']  = "client"
 default['postfix']['myhostname'] = node['fqdn']
 default['postfix']['mydomain']   = node['domain']
 default['postfix']['myorigin']   = "$myhostname"
-default['postfix']['relayhost']  = ""
+default['postfix']['relayhost']  = "smtp.gmail.com:587"
 default['postfix']['mail_relay_networks']        = "127.0.0.0/8"
 default['postfix']['relayhost_role']             = "relayhost"
 default['postfix']['multi_environment_relay'] = false
 default['postfix']['inet_interfaces'] = nil
 
 default['postfix']['smtpd_use_tls'] = "yes"
-default['postfix']['smtp_sasl_auth_enable'] = "no"
+default['postfix']['smtp_use_tls']  = "yes"
+default['postfix']['smtp_tls_security_level'] = "may"
+default['postfix']['smtp_sasl_auth_enable'] = "yes"
 default['postfix']['smtp_sasl_password_maps']    = "hash:/etc/postfix/sasl_passwd"
 default['postfix']['smtp_sasl_security_options'] = "noanonymous"
-default['postfix']['smtp_tls_cafile'] = "/etc/postfix/cacert.pem"
-default['postfix']['smtp_use_tls']    = "yes"
-default['postfix']['smtp_sasl_user_name'] = ""
-default['postfix']['smtp_sasl_passwd']    = ""
+default['postfix']['smtp_sasl_user_name'] = "linuxtrader@gmail.com"
+default['postfix']['smtp_sasl_passwd']    = "stephen1"
 
 default['postfix']['use_procmail'] = false
 
