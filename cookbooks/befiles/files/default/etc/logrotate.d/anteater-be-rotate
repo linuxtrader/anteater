@@ -39,6 +39,7 @@
 
 # Broken since hostnames can change
 # and might belong in base files
+# and might rotate files leaving none for thumbdrive to pickup
 /mnt/scratch/zotac-boot.fsa
 /mnt/scratch/zotac-root.fsa
 /mnt/scratch/zotac-home.fsa

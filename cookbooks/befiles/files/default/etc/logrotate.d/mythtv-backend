@@ -1,0 +1,17 @@
+/var/log/mythtv/mythbackend.log {
+        daily
+	size=10M
+        rotate 3
+        notifempty
+        copytruncate
+}
+
+/var/log/mythtv/mirobridge.log {
+        daily
+        size=10M
+        rotate 7
+        notifempty
+        copytruncate
+        missingok
+}
+
