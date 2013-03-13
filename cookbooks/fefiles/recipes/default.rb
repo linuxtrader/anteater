@@ -27,43 +27,48 @@ bash "Relogin_Ant" do
 end
 #notifies :run, "script[Relogin_Ant]"
 
-remote_directory "/usr/local/bin" do
-    source "local_bin"
-    owner "root"
-    group "root"
-    mode  "755"
-    files_mode "755"
-# Actually a package could place things here, plus basefiles does
-#    if node[:hostname] =~ /^fe/
-#      purge true
-#    end
+# mythtv owner helps show relevance
+# dir must be root
+%w{local/bin local/sbin}.each do |mdir|
+ remote_directory "/usr/#{mdir}" do
+     source "#{mdir}"
+     owner "root"
+     group "root"
+     files_owner "mythtv"
+     files_group "mythtv"
+     mode  "755"
+     files_mode "755"
+ # Cant: Other entities place things here
+ #    if node[:hostname] =~ /^fe/
+ #      purge true
+ #    end
+ end
 end
 
-remote_directory "/usr/local/etc" do
-    source "local_etc"
-    owner "root"
-    group "root"
-#   purge true
+%w{local/etc}.each do |mdir|
+ remote_directory "/usr/#{mdir}" do
+     source "#{mdir}"
+     owner "root"
+     group "root"
+     files_owner "mythtv"
+     files_group "mythtv"
+     mode  "755"
+     files_mode "644"
+ end
 end
 
-remote_directory "/usr/local/sbin" do
-    source "local_sbin"
-    files_owner "mythtv"
-    files_group "mythtv"
-    mode  "755"
-    files_mode "755"
-# Actually a package could place things here
-#   if node[:hostname] =~ /^fe/
-#     purge true
-#   end
-end
-
+# keep as root because ran as root
 remote_directory "/etc" do
     source "etc"
     owner "root"
     group "root"
+    files_owner "root"
+    files_group "root"
+    mode  "755"
+    files_mode "644"
 end
 
+# keep as root because ran as root
 %w{quarterly weekly}.each do |cycle|
  remote_directory "/etc/cron.#{cycle}" do
     source "etc_cron_bin/cron.#{cycle}"
@@ -76,17 +81,12 @@ end
 # MYTHTV and ANT
 %w{mythtv ant}.each do |acct|
 
- directory "/home/#{acct}" do
-   mode  "755"
- end
-
  remote_directory "/home/#{acct}" do
    source "home_#{acct}"
-   #Probably the default but could be picked up
-   #from a prior stanza
    files_mode "644"
    files_owner "#{acct}"
    files_group "#{acct}"
+   mode  "755"
  end
 
  #enforce the mode, create file if missing
@@ -98,11 +98,15 @@ end
 
  directory "/home/#{acct}/.ssh" do
    mode  "700"
+   owner "#{acct}"
+   group "#{acct}"
  end
 
  #Excluded from snapshops, for large or working files
  directory "/home/#{acct}/Downloads" do
    mode  "755"
+   owner "#{acct}"
+   group "#{acct}"
  end
 
  link "/home/#{acct}/.mythtv/mysql.txt" do
@@ -112,6 +116,19 @@ end
  end
 
 end
+
+
+# ANT ONLY
+#Also add recordings mount for only BE/FE combos
+#case on tags can determine combos
+%w{music pictures}.each do |mlink|
+ link "/home/ant/Desktop/#{mlink}" do
+   to "/var/lib/mythtv/#{mlink}"
+   owner "ant"
+   group "ant"
+ end
+end
+
 
 # MYTHTV ONLY
 link "/home/mythtv/.profile" do
@@ -126,19 +143,6 @@ link "/home/mythtv/.mythtv/config.xml" do
   group "mythtv"
 end
 
-
-# ANT ONLY
-#And what of recordings for only BE/FE combos
-#case on tags can determine combos
-%w{music pictures}.each do |mlink|
- link "/home/ant/Desktop/#{mlink}" do
-   to "/var/lib/mythtv/#{mlink}"
-   owner "ant"
-   group "ant"
- end
-end
-
-#ant needs this too
 remote_directory "/home/mythtv" do
     source "home_mythtv_secret"
     #This mode can actually carry over to 
