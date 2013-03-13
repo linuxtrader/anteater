@@ -11,7 +11,7 @@ BACKDIR=${2:-/mnt/scratch}           # def location
 BACKNAM=${HOST}"-"${ORIGVOL}         # name of the archive
 
 FSAOPTS='-o -j2 --exclude=/home/ant/Dropbox'  #Wildcards already protected
-if [ ${ORIGVOL} == "home"   ]; then FSAOPTS="-o -j2 -e /ant/Dropbox/* "; fi
+if [ ${ORIGVOL} == "home"   ]; then FSAOPTS="-o -j2 -e /ant/Dropbox/* -e /ant/Downloads/* -e /mythtv/Downloads/* "; fi
 if [ ${ORIGVOL} == "mythtv" ]
 then
       FSAOPTS="-o -j2 -e /recordings/* -e /livetv/* -e /videos/* -e /music/* -e /pictures/* "

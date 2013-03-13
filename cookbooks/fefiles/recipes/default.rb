@@ -76,6 +76,10 @@ end
 # MYTHTV and ANT
 %w{mythtv ant}.each do |acct|
 
+ directory "/home/#{acct}" do
+   mode  "755"
+ end
+
  remote_directory "/home/#{acct}" do
    source "home_#{acct}"
    #Probably the default but could be picked up
@@ -92,12 +96,13 @@ end
    group "#{acct}"
  end
 
- directory "/home/#{acct}" do
-   mode  "755"
- end
-
  directory "/home/#{acct}/.ssh" do
    mode  "700"
+ end
+
+ #Excluded from snapshops, for large or working files
+ directory "/home/#{acct}/Downloads" do
+   mode  "755"
  end
 
  link "/home/#{acct}/.mythtv/mysql.txt" do
@@ -123,7 +128,8 @@ end
 
 
 # ANT ONLY
-#And what of recordings for only BE/FE
+#And what of recordings for only BE/FE combos
+#case on tags can determine combos
 %w{music pictures}.each do |mlink|
  link "/home/ant/Desktop/#{mlink}" do
    to "/var/lib/mythtv/#{mlink}"
