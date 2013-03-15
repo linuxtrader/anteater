@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: fepackages
+# Cookbook Name:: fepkgs
 # Recipe:: default
 #
 # Copyright 2013, linuxtrader, Com.

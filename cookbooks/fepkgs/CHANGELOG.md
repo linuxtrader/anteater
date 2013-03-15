@@ -1,10 +1,10 @@
-# CHANGELOG for fepackages
+# CHANGELOG for fepkgs
 
-This file is used to list changes made in each version of fepackages.
+This file is used to list changes made in each version of fepkgs.
 
 ## 0.1.0:
 
-* Initial release of fepackages
+* Initial release of fepkgs
 
 - - - 
 Check the [Markdown Syntax Guide](http://daringfireball.net/projects/markdown/syntax) for help with Markdown.
