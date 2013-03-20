@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Placed by chef
+
+/bin/ls /media/router/tvip > /dev/null 2>1 || mount -t cifs //router.home/USB_Storage /media/router -o user=admin -o password=anteat3r
