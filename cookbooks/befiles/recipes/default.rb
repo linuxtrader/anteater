@@ -17,36 +17,32 @@
 # limitations under the License.
 #
 
-remote_directory "/usr/local/bin" do
-    source "local_bin"
-    owner "root"
-    group "root"
-    mode  "755"
-    files_mode "755"
-# No purge because a package could place things here, plus basefiles does
-#    if node[:hostname] =~ /^fe/
-#      purge true
-#    end
-end
-
-remote_directory "/usr/local/etc" do
-    source "local_etc"
-    owner "root"
-    group "root"
-end
-
-remote_directory "/usr/local/sbin" do
-    source "local_sbin"
-    files_owner "mythtv"
-    files_group "mythtv"
-    mode  "755"
-    files_mode "755"
+# mythtv owner helps show relevance
+# dir must be root
+%w{local/bin local/sbin}.each do |mdir|
+ remote_directory "/usr/#{mdir}" do
+     source "#{mdir}"
+     owner "root"
+     group "root"
+     files_owner "mythtv"
+     files_group "mythtv"
+     mode  "755"
+     files_mode "755"
+ # Cant: Other entities place things here
+ #    if node[:hostname] =~ /^fe/
+ #      purge true
+ #    end
+ end
 end
 
 remote_directory "/etc" do
     source "etc"
     owner "root"
     group "root"
+    files_owner "root"
+    files_group "root"
+    mode  "755"
+    files_mode "644"
 end
 
 
@@ -57,45 +53,85 @@ end
  end
 end
 
+############################################
 
-#####Cant purge in here cause lots of misc stuff collects that is needed
-####remote_directory "/home/mythtv" do
-####    source "home_mythtv"
-####    files_owner "mythtv"
-####    files_group "mythtv"
-####end
-####
-#####Present from rule above, now enforce the mode
-####%w{.bash_history .my.cnf .ssh/config}.each do |fil|
-#### file "/home/mythtv/#{fil}" do
-####  mode  "600"
-#### end
-####end
-####
-####directory "/home/mythtv/.ssh" do
-####  mode  "700"
-####end
-####
-####link "/home/mythtv/.profile" do
-####  to ".bashrc"
-####  owner "mythtv"
-####  group "mythtv"
-####end
-####
-####link "/home/mythtv/.mythtv/config.xml" do
-####  to "/etc/mythtv/config.xml"
-####  owner "mythtv"
-####  group "mythtv"
-####end
-####
-####link "/home/mythtv/.mythtv/mysql.txt" do
-####  to "/etc/mythtv/mysql.txt"
-####  owner "mythtv"
-####  group "mythtv"
-####end
-####
-####link "/home/ant/.mythtv/mysql.txt" do
-####  to "/etc/mythtv/mysql.txt"
-####  owner "ant"
-####  group "ant"
-####end
+#
+# Borrowed from Cookbook Name:: fefiles
+
+
+## ROBOTIC accts  ##########################
+#
+## MYTHTV and ANT
+#%w{mythtv ant}.each do |acct|
+#
+# remote_directory "/home/#{acct}" do
+#   source "home_#{acct}"
+#   files_mode "644"
+#   files_owner "#{acct}"
+#   files_group "#{acct}"
+#   mode  "755"
+# end
+#
+# #enforce the mode, create file if missing
+# file "/home/#{acct}/.bash_history" do
+#   mode  "600"
+#   owner "#{acct}"
+#   group "#{acct}"
+# end
+#
+# directory "/home/#{acct}/.ssh" do
+#   mode  "700"
+#   owner "#{acct}"
+#   group "#{acct}"
+# end
+#
+# #Excluded from snapshops, for large or working files
+# directory "/home/#{acct}/Downloads" do
+#   mode  "755"
+#   owner "#{acct}"
+#   group "#{acct}"
+# end
+#
+# link "/home/#{acct}/.mythtv/mysql.txt" do
+#   to "/etc/mythtv/mysql.txt"
+#   owner "#{acct}"
+#   group "#{acct}"
+# end
+#
+#end
+#
+#
+## ANT ONLY
+##Also add recordings mount for only BE/FE combos
+##case on tags can determine combos
+#%w{music pictures}.each do |mlink|
+# link "/home/ant/Desktop/#{mlink}" do
+#   to "/var/lib/mythtv/#{mlink}"
+#   owner "ant"
+#   group "ant"
+# end
+#end
+#
+#
+## MYTHTV ONLY
+#link "/home/mythtv/.profile" do
+#  to ".bashrc"
+#  owner "mythtv"
+#  group "mythtv"
+#end
+#
+#link "/home/mythtv/.mythtv/config.xml" do
+#  to "/etc/mythtv/config.xml"
+#  owner "mythtv"
+#  group "mythtv"
+#end
+#
+#remote_directory "/home/mythtv" do
+#    source "home_mythtv_secret"
+#    #This mode can actually carry over to 
+#    #another stanza that follows
+#    #esp of same destination
+#    files_mode "600"
+#    files_owner "mythtv"
+#    files_group "mythtv"
+#end
