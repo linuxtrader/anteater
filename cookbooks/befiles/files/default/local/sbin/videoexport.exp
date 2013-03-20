@@ -24,4 +24,4 @@ set DIR     [lindex $argv 2]
 set DEVICES [lindex $argv 3]
 
 set mypid [spawn -noecho /usr/local/sbin/videoexport.pl $START $CHANID $DIR $DEVICES]
-expect timeout {exec kill $mypid;exec kill -9 $mypid;exec ls -l | mail -s video_export_timeout linuxtrader@gmail.com; exit 1}
+expect timeout {exec kill $mypid;exec kill -9 $mypid;exec ls -l ~ | mail -s video_export_timeout linuxtrader@gmail.com; exit 1}
