@@ -4,7 +4,7 @@
 
 cd /var/lib/mythtv/videos/apple
 
-ip=`/bin/hostname -I`
+ip=`/bin/hostname -I | sed 's/ //'`
 
 echo "<h3>Please read this message on a portable device, while connected to your home's WiFi.</h3>"
 echo "<p>The links below will enable you to save your DVR recordings to your portable device.</p>"
