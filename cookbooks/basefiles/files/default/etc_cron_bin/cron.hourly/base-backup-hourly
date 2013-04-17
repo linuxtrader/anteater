@@ -3,7 +3,7 @@
 # Placed by chef
 
 # Copy backups if /media/PATRIOT is mounted, then unmount it.
-test -d /media/PATRIOT && cp /mnt/scratch/*.fsa /media/PATRIOT && (mail -s "Thumbdrive complete/unmounted on $HOSTNAME" linuxtrader@gmail.com <<EOB
+test -d /media/PATRIOT && cp /mnt/scratch/*.fsa /media/PATRIOT && (mail -s "Thumbdrive complete/unmounted on $HOSTNAME" admin_local <<EOB
 OS backup copy to thumbdrive is complete on $HOSTNAME
 
 `date`

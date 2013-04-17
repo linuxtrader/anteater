@@ -41,7 +41,13 @@ default['postfix']['milter_protocol']  = "6"
 default['postfix']['smtpd_milters']  = ""
 default['postfix']['non_smtpd_milters']  = ""
 
-default['postfix']['aliases'] = {}
+default['postfix']['aliases'] = {
+         :critical     => ['linuxtrader@gmail.com','dancell@mms.att.net'],
+         :alert        => 'linuxtrader@gmail.com',
+         :admin_local  => 'linuxtrader@gmail.com',
+         :admin_global => 'linuxtrader@gmail.com',
+         :users        => ['linuxtrader@gmail.com','drmommarose@yahoo.com']
+          }
 
 default['postfix']['sender_canonical_classes'] = nil
 default['postfix']['recipient_canonical_classes'] = nil
