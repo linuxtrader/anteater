@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-%w{avahi-daemon rdist tob system-config-lvm exaile}.each do |delpkg|
+%w{avahi-daemon rdist tob system-config-lvm exaile nano}.each do |delpkg|
  package "#{delpkg}" do
    action  :purge
  end
