@@ -29,7 +29,8 @@ then
         exit 1
 fi
 
-# main command of the script that does the real stuff
+# main commands of the script that does the real stuff
+dd if=${ORIGVOL} of=${BACKDIR}/${BACKNAM}.img >/dev/null 2>&1
 if fsarchiver ${FSAOPTS} savefs ${BACKDIR}/${BACKNAM}.fsa ${ORIGVOL}
 then
         RES=0
