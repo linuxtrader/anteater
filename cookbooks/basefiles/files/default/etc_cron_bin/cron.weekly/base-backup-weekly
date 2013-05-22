@@ -3,10 +3,12 @@
 # Placed by chef
 
 #Make local backups if this machine has a scratch dir.
-#test -d /mnt/scratch   && /usr/local/bin/fssnap.boot           /mnt/scratch  > /tmp/logs.boot 2>&1
-/usr/local/bin/fssnap.boot           >  /tmp/log.fssnapS 2>&1
-/usr/local/bin/fssnap.system  root   >> /tmp/log.fssnapS 2>&1
-/usr/local/bin/fssnap.system  mythtv >> /tmp/log.fssnapS 2>&1
-/usr/local/bin/fssnap.system  home   >> /tmp/log.fssnapS 2>&1
+me=`/bin/hostname -f | sed 's/ //'`
+log=/var/tmp/${me}_fssnapS.log
+
+test -b /dev/sda1                 && /usr/local/bin/fssnap.boot           >  ${log} 2>&1
+test -b /dev/mapper/system-root   && /usr/local/bin/fssnap.system  root   >> ${log} 2>&1
+test -b /dev/mapper/system-mythtv && /usr/local/bin/fssnap.system  mythtv >> ${log} 2>&1
+test -b /dev/mapper/system-home   && /usr/local/bin/fssnap.system  home   >> ${log} 2>&1
 
 exit 0

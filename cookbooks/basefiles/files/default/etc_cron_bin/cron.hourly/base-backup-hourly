@@ -3,21 +3,25 @@
 # Placed by chef
 
 me=`/bin/hostname -f | sed 's/ //'`
+log=/var/tmp/${me}_thumbdrive.log
+Slog=/var/tmp/${me}_fssnapS.log
 # Copy backups if /media/PATRIOT is mounted, then unmount it.
-test -d /media/PATRIOT && cp /mnt/scratch/*.fsa /media/PATRIOT && (mail -s "Thumbdrive complete/unmounted on $me" admin_local <<EOB
-OS backup copy to thumbdrive is complete on $me
+cd /tmp
+test -d /mnt/scratch && cd /mnt/scratch
+test -d /media/PATRIOT && cp *.fsa *.cpio *.sf *back /media/PATRIOT && (mail -s "Thumbdrive backup complete/unmounted on $me" admin_local <<EOB
+Config backup to thumbdrive is complete on $me
 
 `date`
 `df -h /media/PATRIOT`
 `ls -l /media/PATRIOT`
-`cat /tmp/log.fssnapS`
+`cat ${Slog}`
 
 --------------------------
 This email is from /etc/cron.hourly/base-backup-hourly
 
 EOB
-) > /tmp/log.thumbdrive 2>&1
+) > ${log} 2>&1
 
-test -d  /media/PATRIOT && /bin/umount /media/PATRIOT  >> /tmp/log.thumbdrive 2>&1
+test -d /media/PATRIOT && /bin/umount /media/PATRIOT  >> ${log} 2>&1
 
 exit 0
