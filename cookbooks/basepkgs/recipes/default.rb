@@ -23,7 +23,7 @@
  end
 end
 
-%w{mime-construct smartmontools unison-gtk sysstat gparted fsarchiver nfs-common ethtool dstat git-core csh}.each do |addpkg|
+%w{mime-construct smartmontools unison-gtk sysstat gparted fsarchiver nfs-common ethtool dstat git-core csh feh}.each do |addpkg|
  package "#{addpkg}" do
  end
 end
