@@ -6,9 +6,12 @@ me=`/bin/hostname -f | sed 's/ //'`
 log=/var/tmp/${me}_thumbdrive.log
 Slog=/var/tmp/${me}_fssnapS.log
 # Copy backups if /media/PATRIOT is mounted, then unmount it.
-cd /tmp
-test -d /mnt/scratch && cd /mnt/scratch
-test -d /media/PATRIOT && cp *.fsa *.cpio *.sf *back /media/PATRIOT && (mail -s "Thumbdrive backup complete/unmounted on $me" admin_local <<EOB
+cd /mnt/scratch > /dev/null 2>&1 || exit 0
+
+test -d /media/PATRIOT || exit 0
+
+cp -p *.fsa *.cpio *.sf *back /media/PATRIOT > ${log}  2>&1
+mail -s "Thumbdrive backup complete/unmounted on $me" admin_local >> ${log} 2>&1 <<EOB 
 Config backup to thumbdrive is complete on $me
 
 `date`
@@ -20,8 +23,7 @@ Config backup to thumbdrive is complete on $me
 This email is from /etc/cron.hourly/base-backup-hourly
 
 EOB
-) > ${log} 2>&1
 
-test -d /media/PATRIOT && /bin/umount /media/PATRIOT  >> ${log} 2>&1
+/bin/umount /media/PATRIOT  >> ${log} 2>&1
 
 exit 0
