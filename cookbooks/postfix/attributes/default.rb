@@ -46,6 +46,7 @@ default['postfix']['aliases'] = {
          :alert        => 'linuxtrader@gmail.com',
          :admin_local  => 'linuxtrader@gmail.com',
          :admin_global => 'linuxtrader@gmail.com',
+         :root         => 'admin_global',
          :users        => ['linuxtrader@gmail.com','drmommarose@yahoo.com']
           }
 
