@@ -42,12 +42,12 @@ default['postfix']['smtpd_milters']  = ""
 default['postfix']['non_smtpd_milters']  = ""
 
 default['postfix']['aliases'] = {
-         :critical     => ['linuxtrader@gmail.com','dancell@mms.att.net'],
+         :critical     => ['linuxtrader@gmail.com','9723425208@tomomail.net'],
          :alert        => 'linuxtrader@gmail.com',
          :admin_local  => 'linuxtrader@gmail.com',
          :admin_global => 'linuxtrader@gmail.com',
          :root         => 'admin_global',
-         :users        => ['linuxtrader@gmail.com','drmommarose@yahoo.com']
+         :users        => 'linuxtrader@gmail.com'
           }
 
 default['postfix']['sender_canonical_classes'] = nil

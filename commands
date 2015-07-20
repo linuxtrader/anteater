@@ -1,3 +1,7 @@
+#Package/gem installed, have it prompt to build a workstation environment.
+knife configure -i
+
+
 Push out changes
 
 knife cookbook upload fefiles
@@ -55,8 +59,14 @@ tail -f /var/log/chef/client.log | egrep 'created|backed up|purged|installed|cha
 
 knife bootstrap -x mythtv --sudo 192.168.1.96                             -r 'role[be],recipe[chef-client]' 
 # Pre-bootstrap: remote node add server1.home to /etc/hosts with current IP
+##OLD...
 knife bootstrap -x mythtv --sudo anteater.dyndns.tv -N anteater.dyndns.tv -r 'role[be],recipe[chef-client]' 
-# Post-bootstrap: edit /etc/client.rb and convert server1.home to anteater.webhop.net
+##NEW Bootstrap when dyndns.tv and webhop.net went away
+1. on server1.home: knife node delete anteater.dyndns.tv; knife client delete anteater.dyndns.tv
+2. on zotac.smith:  rm /etc/chef/client.pem
+3. on server1.home: knife bootstrap -x mythtv --server-url "http://anteater.duckdns.org:4000" --sudo zotac.duckdns.org -N zotac.duckdns.org -r 'role[be],recipe[chef-client]'
+4. on zotac.smith:  confirm duckdns.org names in client.rb
+5. on server1.home: knife tag create zotac.duckdns.org frontend backend Smith
 
 Add and rm constraints per node
 knife node run_list add    smithsbe "recipe[befiles@0.1.2]"
@@ -64,19 +74,44 @@ knife node run_list remove smithsbe "recipe[befiles@0.1.2]"
 
 
 knife search node 'fqdn:zotac.*' 
-knife search node 'fqdn:zotac.*' 
 knife status
-knife ssh -x mythtv 'role:be' -i ~/.ssh/id_dsa  "ifconfig -a" -a name 
 
-knife ssh -x mythtv 'role:be' -i ~/.ssh/id_dsa "tail -200 /var/log/chef/client.log | egrep 'created|backed up|purged|installed|changed'" -a name
+knife ssh -x mythtv 'role:be'    -i ~/.ssh/id_dsa -a name "ifconfig -a"
 
+knife ssh -x mythtv 'role:be'    -i ~/.ssh/id_dsa -a name "tail -200 /var/log/chef/client.log | egrep 'created|backed up|purged|installed|changed'"
+knife ssh -x mythtv 'tags:*'     -i ~/.ssh/id_dsa -a name "/bin/hostname|mail -s any linuxtrader@gmail.com"
+
+knife ssh -x mythtv tags:backend -i ~/.ssh/id_dsa -a name "ls -l /etc/logrotate.d/myth*"
+knife ssh -x mythtv tags:backend -i ~/.ssh/id_dsa -a name "sudo ls -l /etc/logrotate.d/myth*"
+knife ssh -x root   tags:backend -i ~/.ssh/id_dsa -a name "rm /etc/logrotate.d/mythtv-anteater"
+
+#GEM commands
+
+gem list -d   # Valuable details
 
 # Install an exact version of a gem not the latest
 # -V see where it puts everyfile
 # normally in /var/lib/gems, but can put a few executables in the OS.
-gem install chef  -v 10.24.0 -V
+/opt/chef/embedded/bin/gem install chef  -v 10.24.0 -V
 
 gem contents chef  # Shows the /var/lib/gems but not the executables
 
 xlpted05 ~>export http_proxy=http://proxy.swacorp.com:8080
 xlpted05 ~>sudo /opt/chef/embedded/bin/gem install health_inspector
+
+#Show the versions of avail rubygems
+# -r remote -a all
+gem list rubygems-update -r -a
+
+#Downgrade rubygems to 1.8.25
+gem help update  #explains the system flag
+gem update --system 1.8.25
+
+# watch, and dont need docs please
+gem help install  # could change the bin directory
+gem install a_real_gem --no-rdoc --no-ri -V
+
+
+# Often helps to get rid of the old gem
+/opt/chef/embedded/bin/gem list knife-psearch
+/opt/chef/embedded/bin/gem cleanup knife-psearch
