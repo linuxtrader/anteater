@@ -96,8 +96,8 @@ gem list -d   # Valuable details
 
 gem contents chef  # Shows the /var/lib/gems but not the executables
 
-xlpted05 ~>export http_proxy=http://proxy.swacorp.com:8080
-xlpted05 ~>sudo /opt/chef/embedded/bin/gem install health_inspector
+server05 ~>export http_proxy=http://proxy.domainname.com:8080
+server05 ~>sudo /opt/chef/embedded/bin/gem install health_inspector
 
 #Show the versions of avail rubygems
 # -r remote -a all
